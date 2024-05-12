@@ -20,7 +20,9 @@ export class TaleService {
   }
 
   async addTale(body: any): Promise<any> {
-    const data = await HttpService.post(`${apiRoutes.tale.tale}`, body)
+    const data = await HttpService.post(`${apiRoutes.tale.tale}`, body, {
+      'Content-Type': 'multipart/form-data'
+    })
     return data
   }
 

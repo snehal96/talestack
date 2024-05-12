@@ -11,6 +11,12 @@ class HttpService {
     })
   }
 
+  token = localStorage.getItem('token') ?? ''
+  headers = {
+    Authorization: `Bearer ${this.token}`,
+    'Content-Type': 'application/json'
+  }
+
   getCurrentUser = () => {
     return new Promise((resolve, reject) => {
       const removeListener = onAuthStateChanged(
@@ -26,11 +32,10 @@ class HttpService {
 
   async get(endpoint: string, params?: any): Promise<any> {
     try {
-      const token = localStorage.getItem('token') ?? ''
       const baseURL = apiRoutes.baseUrl
       const response: any = await this.http.get(`${baseURL}/${endpoint}`, {
         params,
-        headers: { Authorization: `Bearer ${token}` }
+        headers: this.headers
       })
       return response.data
     } catch (error) {
@@ -38,12 +43,14 @@ class HttpService {
     }
   }
 
-  async post(endpoint: string, data: any): Promise<any> {
+  async post(endpoint: string, data: any, headers?: Object): Promise<any> {
     try {
-      const token = localStorage.getItem('token') ?? ''
       const baseURL = apiRoutes.baseUrl
       const response: any = await this.http.post(`${baseURL}/${endpoint}`, data, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: {
+          ...this.headers,
+          ...headers
+        }
       })
       return response.data
     } catch (error) {
@@ -51,12 +58,14 @@ class HttpService {
     }
   }
 
-  async put(endpoint: string, data: any): Promise<any> {
+  async put(endpoint: string, data: any, headers?: Object): Promise<any> {
     try {
-      const token = localStorage.getItem('token') ?? ''
       const baseURL = apiRoutes.baseUrl
       const response: any = await this.http.put(`${baseURL}/${endpoint}`, data, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: {
+          ...this.headers,
+          ...headers
+        }
       })
       return response.data
     } catch (error) {
@@ -66,10 +75,9 @@ class HttpService {
 
   async delete(endpoint: string, data: any): Promise<any> {
     try {
-      const token = localStorage.getItem('token') ?? ''
       const baseURL = apiRoutes.baseUrl
       const response: any = await this.http.delete(`${baseURL}/${endpoint}`, data, {
-        headers: { Authorization: `Bearer ${token}` }
+        headers: this.headers
       })
       return response.data
     } catch (error) {
