@@ -21,7 +21,7 @@ const router = useRouter()
 
 const viewStory = () => {
   router.push({
-    path: `${props.story.taleId}/story/${props.story.entityId}`
+    path: `/tale/${props.story.taleId}/story/${props.story.entityId}`
   })
 }
 </script>

@@ -41,8 +41,6 @@
 import { TaleService } from '@/api/TaleService'
 import StoryList from '@/components/StoryList.vue'
 import { useAuthStore } from '@/stores/auth'
-import story from '@/test-data/story'
-import tale from '@/test-data/tale'
 import { onMounted } from 'vue'
 import { reactive } from 'vue'
 import { useRoute } from 'vue-router'
@@ -74,45 +72,39 @@ onMounted(async () => {
   const taleId: string = route.params.id as string
   const taleRes: any = await taleService.fetchTaleById(taleId)
 
-  const taleData: any = tale[0]
-  const storyData: any = story.story1
+  if (taleRes['success']) {
+    const tale = taleRes['data']
 
-  data.tale = taleData
-  data.storylist = storyData
+    try {
+      const activeStories: any = await taleService.fetchTaleActiveStories(taleId)
+      if (activeStories['success']) {
+        data.tale = activeStories['data']
+      } else {
+        data.error = activeStories['message']
+      }
+      data.loadingActive = false
+    } catch (e) {
+      console.log(e)
+      data.error = ''
+      data.loadingActive = false
+    }
 
-  // if (taleRes['success']) {
-  //   const tale = taleRes['data']
-
-  //   try {
-  //     const activeStories: any = await taleService.fetchTaleActiveStories(taleId)
-  //     if (activeStories['success']) {
-  //       data.tales = activeStories['data']
-  //     } else {
-  //       data.error = activeStories['message']
-  //     }
-  //     data.loadingActive = false
-  //   } catch (e) {
-  //     console.log(e)
-  //     data.error = ''
-  //     data.loadingActive = false
-  //   }
-
-  //   try {
-  //     if (tale.userId === authStore.user.uid) {
-  //       const draftStories: any = await taleService.fetchTaleDraftStories(taleId)
-  //       if (draftStories['success']) {
-  //         data.tales = draftStories['data']
-  //       } else {
-  //         data.error = draftStories['message']
-  //       }
-  //     }
-  //     data.loadingDraft = false
-  //   } catch (e) {
-  //     console.log(e)
-  //     data.error = ''
-  //     data.loadingDraft = false
-  //   }
-  // }
+    try {
+      if (tale.userId === authStore.user.uid) {
+        const draftStories: any = await taleService.fetchTaleDraftStories(taleId)
+        if (draftStories['success']) {
+          data.tale = draftStories['data']
+        } else {
+          data.error = draftStories['message']
+        }
+      }
+      data.loadingDraft = false
+    } catch (e) {
+      console.log(e)
+      data.error = ''
+      data.loadingDraft = false
+    }
+  }
 })
 </script>
 

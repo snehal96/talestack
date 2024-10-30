@@ -11,7 +11,6 @@
 <script setup lang="ts">
 import { UserService } from '@/api/UserService'
 import ActiveReadTile from '@/components/ActiveReadTile.vue'
-import userCurrentReadData from '@/test-data/usercurrentread'
 import { onMounted } from 'vue'
 import { reactive } from 'vue'
 
@@ -27,8 +26,7 @@ onMounted(async () => {
   try {
     const res: any = await userService.fetchUserCurrentRead()
     if (res['success']) {
-      const read: any = userCurrentReadData
-      data.currentReadList = read || res['data']
+      data.currentReadList = res['data']
     } else {
       data.error = res['message']
     }

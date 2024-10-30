@@ -5,7 +5,6 @@
 <script setup lang="ts">
 import { UserService } from '@/api/UserService'
 import TaleList from '@/components/TaleList.vue'
-import tale from '@/test-data/tale'
 import { onMounted } from 'vue'
 import { reactive } from 'vue'
 
@@ -21,8 +20,7 @@ onMounted(async () => {
   try {
     const res: any = await userService.fetchUserSavedTales()
     if (res['success']) {
-      const taless: any = tale
-      data.tales = taless || res['data']
+      data.tales = res['data']
     } else {
       data.error = res['message']
     }

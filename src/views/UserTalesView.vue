@@ -6,7 +6,6 @@
 import { TaleService } from '@/api/TaleService'
 import TaleList from '@/components/TaleList.vue'
 import { useAuthStore } from '@/stores/auth'
-import tale from '@/test-data/tale'
 import { onMounted } from 'vue'
 import { reactive } from 'vue'
 
@@ -23,12 +22,10 @@ onMounted(async () => {
   try {
     const res: any = await taleService.fetchUserTales(authStore.user?.uid, 0)
     if (res['success']) {
-      const taless: any = tale
-      data.tales = taless || res['data']
+      data.tales = res['data']
     } else {
       data.error = res['message']
     }
-
     data.loading = false
   } catch (e) {
     console.log(e)

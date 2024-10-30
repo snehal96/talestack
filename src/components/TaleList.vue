@@ -30,7 +30,7 @@ defineProps(['tales', 'isUserTale', 'type'])
 const router = useRouter()
 
 const goToTale = (tale: any) => {
-  router.push({ path: `tale/${tale.entityId}`, params: { tale: tale } })
+  router.push({ path: `/tale/${tale.entityId}`, params: { tale: tale } })
 }
 </script>
 

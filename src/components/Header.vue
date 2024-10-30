@@ -57,16 +57,14 @@
 </template>
 
 <script setup lang="ts">
-import { onMounted, ref } from 'vue'
+import { reactive, onMounted, ref } from 'vue'
 import { useRouter } from 'vue-router'
-import { getAuth, signOut } from 'firebase/auth'
+import { getAuth } from 'firebase/auth'
 import { useAuthStore } from '@/stores/auth'
 import defaultUser from '@/assets/default_user.svg'
 import CreateTaleModal from '@/components/modal/CreateTaleModal.vue'
 import { useAppStore } from '@/stores/app'
 import { TaleService } from '@/api/TaleService'
-import { reactive } from 'vue'
-import tale from '@/test-data/tale'
 
 const authStore = useAuthStore()
 const appStore = useAppStore()
@@ -107,8 +105,7 @@ const suggestTale = async (e: any) => {
   try {
     const res: any = await taleService.searchTale(data.query || '')
     if (res.success) {
-      const talss: any = tale
-      data.searchItem = talss || res.data
+      data.searchItem = res.data
     } else {
       data.searchItem = []
     }

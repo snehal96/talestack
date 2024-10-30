@@ -57,8 +57,6 @@ import { TaleService } from '@/api/TaleService'
 import { UserService } from '@/api/UserService'
 import TaleList from '@/components/TaleList.vue'
 import { useAuthStore } from '@/stores/auth'
-import tale from '@/test-data/tale'
-import user from '@/test-data/user'
 import { onMounted } from 'vue'
 import { reactive } from 'vue'
 import { useRoute } from 'vue-router'
@@ -93,10 +91,8 @@ onMounted(async () => {
     let res: any = await profileService.fetchUserInfo(userId)
     let taleRes: any = await taleService.fetchUserTales(userId, 0)
     if (res['success']) {
-      const talss: any = tale
-      const userr: any = user.userInfo
-      data.profile = userr || res['data']
-      data.tales = talss || taleRes['data']
+      data.profile = res['data']
+      data.tales = taleRes['data']
       data.type = isMyProfile ? 'My' : `${data.profile.name || 'Talestack User'}'s`
     }
     data.loading = false

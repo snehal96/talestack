@@ -6,7 +6,12 @@
         <v-tooltip activator="parent" location="bottom">Add Tale</v-tooltip>
       </v-btn>
     </template>
-    <v-card>
+    <v-progress-circular
+      v-if="isUploading"
+      color="amber"
+      indeterminate
+    ></v-progress-circular>
+    <v-card v-else>
       <v-card-title>Add Tale</v-card-title>
       <v-card-text>
         <v-text-field v-model="data.title" label="Title" required hide-details></v-text-field>
@@ -16,7 +21,7 @@
           required
           hide-details
         ></v-text-field>
-        <v-file-input accept="image/*" label="File input" v-model="thumbnail"></v-file-input>
+        <v-file-input accept="image/*" label="File input" name="thumbnail" v-model="thumbnail"></v-file-input>
         <v-select
           v-model="data.category"
           :items="Object.keys(data.categories)"
@@ -42,7 +47,6 @@
 import { HomeService } from '@/api/HomeService'
 import { TaleService } from '@/api/TaleService'
 import SuccessModal from '@/components/modal/SuccessModal.vue'
-import category from '@/test-data/category'
 import { onMounted } from 'vue'
 import { ref } from 'vue'
 import { reactive } from 'vue'
@@ -82,6 +86,7 @@ const submitDialog = async () => {
 
   const formData = new FormData()
   formData.append('file', thumbnail.value)
+  formData.append('type', 'tale')
 
   for ( let key in reqData) {
     formData.append(key, reqData[key])
@@ -103,9 +108,8 @@ onMounted(async () => {
   try {
     let res: any = await categoryService.fetchCategories()
     if (res['success']) {
-      let cat: any = category
-      const val: any = {}
-      let a = (cat || res['data']).map((item: any) => {
+      const val: any = {};
+      (res['data']).map((item: any) => {
         val[item.name] = item.entityId
       })
 

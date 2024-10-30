@@ -14,7 +14,6 @@
 <script setup lang="ts">
 import { HomeService } from '@/api/HomeService'
 import CategoryCard from '@/components/CategoryCard.vue'
-import category from '@/test-data/category'
 import { onMounted } from 'vue'
 import { reactive } from 'vue'
 import { useRouter } from 'vue-router'
@@ -28,15 +27,14 @@ const categoryService = new HomeService()
 const router = useRouter()
 
 function goToTales(category: any) {
-  router.push(`category/${category['entityId']}/tales`)
+  router.push(`/category/${category['entityId']}/tales`)
 }
 
 onMounted(async () => {
   try {
     let res: any = await categoryService.fetchCategories()
     if (res['success']) {
-      let cat: any = category
-      data.categories = cat || res['data']
+      data.categories = res['data']
     }
     data.loading = false
   } catch (e) {

@@ -13,15 +13,13 @@
 </template>
 
 <script lang="ts">
-import { reactive } from 'vue'
+import { reactive, onMounted } from 'vue'
 import Editor from 'vuejs-medium-editor'
 import apiRoutes from '@/api/apiRoutes'
 import { nanoid } from 'nanoid'
-import { onMounted } from 'vue'
 import { getAuth } from 'firebase/auth'
 import { useRoute } from 'vue-router'
 import { TaleService } from '@/api/TaleService'
-import story from '@/test-data/story'
 
 export default {
   name: 'StoryView',
@@ -59,8 +57,8 @@ export default {
         const storyId: string = route.params.storyId as string
         let storyRes: any = await taleService.fetchStoryById(storyId)
         if (storyRes['success']) {
-          const storyData: any = story.story1
-          data.content = story.sample
+          const storyData: any = storyRes['data']
+          data.content = storyData.content || ''
           data.readonly = getAuth().currentUser?.uid !== storyData.createdBy
         } else {
           data.error = storyRes['message']

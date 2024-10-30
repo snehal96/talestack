@@ -5,7 +5,6 @@
 <script setup lang="ts">
 import { TaleService } from '@/api/TaleService'
 import TaleList from '@/components/TaleList.vue'
-import tale from '@/test-data/tale'
 import { onMounted } from 'vue'
 import { reactive } from 'vue'
 import { useRoute } from 'vue-router'
@@ -26,8 +25,7 @@ onMounted(async () => {
   try {
     const res: any = await taleService.fetchCategoryTales(categoryId, 0)
     if (res['success']) {
-      const taless: any = tale
-      data.tales = taless || res['data']
+      data.tales = res['data']
     } else {
       data.error = res['message']
     }
