@@ -2,7 +2,7 @@
   <v-card class="mx-auto" variant="flat">
     <v-card-item>
       <div class="category__image">
-        <img :src="category?.thumbnailUrl" />
+        <img :src="getImageUrl(category?.thumbnailUrl)" />
       </div>
     </v-card-item>
     <v-card-actions>
@@ -15,6 +15,8 @@
   </v-card>
 </template>
 <script setup lang="ts">
+import { getImageUrl } from '@/util/image';
+
 defineProps(['category'])
 </script>
 

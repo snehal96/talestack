@@ -1,9 +1,9 @@
 <template>
-  <v-layout>
-    <Sidebar v-if="authStore.isAuthenticated" />
+  <v-layout v-if="!isAppLoading">
+    <Sidebar v-if="isAuthenticated" />
     <v-main>
-      <Header />
-      <div class="main">
+      <Header v-if="isAuthenticated" />
+      <div :class="{ 'main': isAuthenticated }">
         <RouterView />
       </div>
     </v-main>
@@ -11,12 +11,34 @@
 </template>
 
 <script setup lang="ts">
-import { RouterView } from 'vue-router'
-import Sidebar from './components/Sidebar.vue'
-import Header from './components/Header.vue'
+import { RouterView, useRouter } from 'vue-router'
+import Sidebar from './components/common/Sidebar.vue'
+import Header from './components/common/Header.vue'
 import { useAuthStore } from './stores/auth'
+import { storeToRefs } from 'pinia';
+import { ref, watch } from 'vue';
+import { UserService } from './api/UserService';
 
-const authStore = useAuthStore()
+const router = useRouter()
+const userService:any = new UserService() 
+const { isAuthenticated, user } = storeToRefs(useAuthStore())
+
+const isAppLoading = ref(true)
+
+watch(() => isAuthenticated.value, val => {
+  if (val) {
+    const res:any = userService.fetchUserInfo(user.value.uid)
+    if (res.success) {
+      if (!res.data.isOnboarded) {
+        setTimeout(() => {
+          router.replace('/onboarding')
+        }, 0)
+      }
+    }
+  }
+  isAppLoading.value = false
+}, { immediate: true })
+
 </script>
 
 <style scoped>

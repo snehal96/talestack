@@ -6,7 +6,7 @@
       :key="index"
       class="tale__list__row"
     >
-      <TaleRow :tale="tale" :is-user-tale="isUserTale" />
+      <TaleRow :tale="tale" />
     </div>
   </div>
   <div class="tale__list" v-else>
@@ -16,7 +16,7 @@
       :key="index"
       class="tale__list__item"
     >
-      <TaleCard :tale="tale" :is-user-tale="isUserTale" />
+      <TaleCard :tale="tale" />
     </div>
   </div>
 </template>
@@ -26,7 +26,7 @@ import { useRouter } from 'vue-router'
 import TaleCard from './TaleCard.vue'
 import TaleRow from './TaleRow.vue'
 
-defineProps(['tales', 'isUserTale', 'type'])
+defineProps(['tales', 'type'])
 const router = useRouter()
 
 const goToTale = (tale: any) => {

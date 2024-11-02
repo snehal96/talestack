@@ -49,15 +49,18 @@
 <script setup lang="ts">
 import logo from '@/assets/logo.svg'
 import { useAppStore } from '@/stores/app'
+import { useAuthStore } from '@/stores/auth';
 import { getAuth, signOut } from 'firebase/auth'
 import { useRouter } from 'vue-router'
 
 const router = useRouter()
 const appStore = useAppStore()
+const authStore = useAuthStore()
 
 const handleSignOut = () => {
   const auth: any = getAuth()
   signOut(auth).then(() => {
+    authStore.authenticate(false)
     router.push('/')
   })
 }

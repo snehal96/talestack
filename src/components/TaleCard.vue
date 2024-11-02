@@ -2,7 +2,7 @@
   <v-card class="mx-auto" variant="flat">
     <v-card-item>
       <div class="tale__image">
-        <img :src="tale.thumbnailUrl" />
+        <img :src="getImageUrl(tale.thumbnailUrl)" />
         <div class="tale__image__content">
           <div v-if="!isUserTale" class="tale__image__content__action">
             <v-btn v-if="tale.saved" icon density="comfortable" @click="">
@@ -24,14 +24,21 @@
         <h3>
           {{ tale.title }}
         </h3>
-        <h5>by {{ tale.user.name }}</h5>
+        <h5 v-if="!isUserTale">by {{ tale.user.name }}</h5>
       </div>
     </v-card-actions>
   </v-card>
 </template>
 
 <script setup lang="ts">
-defineProps(['tale', 'isUserTale'])
+import { ref } from 'vue';
+import { useAuthStore } from '@/stores/auth';
+import { getImageUrl } from '@/util/image';
+
+const props = defineProps(['tale'])
+
+const { isCurrentUser } = useAuthStore()
+const isUserTale = ref(isCurrentUser(props.tale?.createdBy))
 </script>
 
 <style lang="scss" scoped>

@@ -3,6 +3,7 @@ import HomeView from '@/views/HomeView.vue'
 import LandingView from '@/views/LandingView.vue'
 import { getAuth, onAuthStateChanged } from 'firebase/auth'
 import { useAuthStore } from '@/stores/auth'
+import OnboardingView from '@/views/OnboardingView.vue'
 
 const router = createRouter({
   history: createWebHistory(import.meta.env.BASE_URL),
@@ -11,6 +12,14 @@ const router = createRouter({
       path: '/',
       name: 'landing',
       component: LandingView
+    },
+    {
+      path: '/onboarding',
+      name: 'onboarding',
+      component: OnboardingView,
+      meta: {
+        requiresAuth: true
+      }
     },
     {
       path: '/home',
@@ -154,7 +163,9 @@ router.beforeEach(async (to, from, next) => {
     const user: any = await getCurrentUser()
     if (user) {
       localStorage.setItem('token', user['accessToken'])
-      useAuthStore().authenticate(true)
+      if (to.name !== 'onboarding') {
+        useAuthStore().authenticate(true)
+      }
       useAuthStore().setFirebaseUser(user)
       next()
     } else {

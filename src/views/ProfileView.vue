@@ -6,7 +6,7 @@
     <div class="profile__container">
       <div class="profile__info">
         <div class="profile__info__image">
-          <img :src="data.profile.profileImageUrl" alt="profilePic" />
+          <img :src="getImageUrl(data.profile.profileImageUrl)" alt="profilePic" />
           <v-btn class="profile__info__image__btn" v-if="isMyProfile" flat color="#ee732f">
             Edit
           </v-btn>
@@ -57,6 +57,7 @@ import { TaleService } from '@/api/TaleService'
 import { UserService } from '@/api/UserService'
 import TaleList from '@/components/TaleList.vue'
 import { useAuthStore } from '@/stores/auth'
+import { getImageUrl } from '@/util/image'
 import { onMounted } from 'vue'
 import { reactive } from 'vue'
 import { useRoute } from 'vue-router'
@@ -127,6 +128,8 @@ onMounted(async () => {
         aspect-ratio: 1/1;
         border-radius: 100%;
         margin: auto;
+        border-radius: 50%;
+        border: 1px solid gray;
       }
 
       &__btn {

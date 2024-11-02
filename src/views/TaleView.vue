@@ -1,25 +1,31 @@
 <template>
   <div class="tale__container">
     <div class="tale__desc">
-      <img :src="data.tale.thumbnailUrl" />
+      <img :src="getImageUrl(data.tale.thumbnailUrl)" />
       <div class="tale__title">
         <div class="tale__title__head">
           <h1>{{ data.tale.title }}</h1>
-          <p>
+          <p v-if="!isUserTale">
             By {{ data.tale.user.name }} <strong>{{ data.tale.currentStoryCount }} stories</strong>
           </p>
         </div>
         <div class="tale__title__action">
-          <v-btn v-if="data.tale.saved" flat color="#ee732f">Unsave</v-btn>
-          <v-btn v-else variant="flat" color="#ee732f">Save</v-btn>
-          <v-btn variant="text">Share</v-btn>
+          <v-btn icon v-if="data.tale.saved" variant="text" density="compact" color="#ee732f">
+            <v-icon>mdi-bookmark</v-icon>
+          </v-btn>
+          <v-btn icon v-else variant="text" density="compact" color="#ee732f">
+            <v-icon>mdi-bookmark-outline</v-icon>
+          </v-btn>
+          <v-btn icon variant="text" density="compact">
+            <v-icon>mdi-share</v-icon>
+          </v-btn>
         </div>
       </div>
       <div class="tale__description">
         <h2>About</h2>
         <p>{{ data.tale.description }}</p>
       </div>
-      <div class="tale__tags">
+      <div v-if="data.tale.tags.length" class="tale__tags">
         <v-chip
           v-for="(tag, index) in data.tale.tags"
           :key="index"
@@ -33,7 +39,11 @@
       </div>
     </div>
     <div class="tale__story">
-      <StoryList :storylist="data.storylist" :tale-title="data.tale.title" />
+      <StoryList
+        :isUserTale="isUserTale"
+        :storylist="data.storylist"
+        :tale-title="data.tale.title"
+      />
     </div>
   </div>
 </template>
@@ -41,7 +51,8 @@
 import { TaleService } from '@/api/TaleService'
 import StoryList from '@/components/StoryList.vue'
 import { useAuthStore } from '@/stores/auth'
-import { onMounted } from 'vue'
+import { getImageUrl } from '@/util/image'
+import { onMounted, ref } from 'vue'
 import { reactive } from 'vue'
 import { useRoute } from 'vue-router'
 
@@ -58,6 +69,7 @@ const data = reactive({
     tags: []
   },
   storylist: [],
+  draftStoryList: [],
   loadingActive: true,
   loadingDraft: true,
   error: ''
@@ -68,17 +80,19 @@ const route = useRoute()
 const authStore: any = useAuthStore()
 const taleService = new TaleService()
 
+const isUserTale = ref(false)
+
 onMounted(async () => {
   const taleId: string = route.params.id as string
   const taleRes: any = await taleService.fetchTaleById(taleId)
 
   if (taleRes['success']) {
-    const tale = taleRes['data']
-
+    const tale = data.tale = taleRes['data']
+    isUserTale.value = authStore.isCurrentUser(tale.createdBy)
     try {
       const activeStories: any = await taleService.fetchTaleActiveStories(taleId)
       if (activeStories['success']) {
-        data.tale = activeStories['data']
+        data.storylist = activeStories['data']
       } else {
         data.error = activeStories['message']
       }
@@ -93,7 +107,7 @@ onMounted(async () => {
       if (tale.userId === authStore.user.uid) {
         const draftStories: any = await taleService.fetchTaleDraftStories(taleId)
         if (draftStories['success']) {
-          data.tale = draftStories['data']
+          data.draftStoryList = draftStories['data']
         } else {
           data.error = draftStories['message']
         }
@@ -130,7 +144,7 @@ onMounted(async () => {
   }
   &__title {
     display: flex;
-    align-items: end;
+    align-items: center;
     margin-top: 24px;
     &__head {
       flex: 1;

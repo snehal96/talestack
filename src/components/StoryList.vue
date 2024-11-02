@@ -1,6 +1,11 @@
 <template>
-  <h2>Story List</h2>
-  <div class="story__container">
+  <div class="story__title">
+    <h2>Story List</h2>
+    <v-btn v-if="isUserTale" icon variant="text">
+      <v-icon>mdi-book-plus-multiple</v-icon>
+    </v-btn>
+  </div>
+  <div v-if="storylist.length" class="story__container">
     <StoryCard
       v-for="(story, index) in storylist"
       :key="index"
@@ -8,19 +13,31 @@
       :tale-title="taleTitle"
     />
   </div>
+  <div v-else>
+    <p>No story available yet</p>
+    <p v-if="isUserTale">Add more stories now</p>
+  </div>
 </template>
 
 <script setup lang="ts">
 import StoryCard from './StoryCard.vue'
 
-defineProps(['storylist', 'taleTitle'])
+defineProps(['isUserTale', 'storylist', 'taleTitle'])
+
 </script>
 
 <style lang="scss" scoped>
-.story__container {
-  display: flex;
-  flex-direction: column;
-  gap: 12px;
-  margin-top: 24px;
+.story {
+  &__title {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+  }
+  &__container {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 24px;
+  }
 }
 </style>

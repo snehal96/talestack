@@ -1,6 +1,6 @@
 import TaleList from '@/components/TaleList.vue';
 <template>
-  <div class="heading">
+  <div v-if="data.userFollowerTales?.length" class="heading">
     <h1>For you</h1>
     <v-btn color="#f9f9f9" icon @click="goToTrendingTales()" flat>
       <v-icon>mdi-chevron-right</v-icon>
@@ -9,7 +9,7 @@ import TaleList from '@/components/TaleList.vue';
   </div>
   <TaleList :tales="data.userFollowerTales" />
   <div class="content">
-    <div class="content__container">
+    <div v-if="data.userCurrentRead.tale" class="content__container">
       <div class="heading">
         <h2>Continue reading</h2>
         <v-btn color="#f9f9f9" icon @click="goToReadList()" flat>
@@ -19,7 +19,7 @@ import TaleList from '@/components/TaleList.vue';
       </div>
       <ActiveReadTile :activeRead="data.userCurrentRead" />
     </div>
-    <div class="content__container">
+    <div v-if="data.trendingUsers?.length" class="content__container">
       <div class="heading">
         <h2>Trending Authors</h2>
         <v-btn color="#f9f9f9" icon @click="goToTrendingUser()" flat>
@@ -32,7 +32,7 @@ import TaleList from '@/components/TaleList.vue';
       </div>
     </div>
   </div>
-  <div class="heading">
+  <div v-if="data.trendingTales.length" class="heading">
     <h1>Trending Tales</h1>
   </div>
   <TaleList :tales="data.trendingTales" />
@@ -50,7 +50,7 @@ const data = reactive({
   userFollowerTales: [],
   trendingTales: [],
   trendingUsers: [],
-  userCurrentRead: {},
+  userCurrentRead: { tale: ''},
   loadingUserFollowerTales: true,
   loadingTrendingTales: true,
   loadingTrendingUsers: true,

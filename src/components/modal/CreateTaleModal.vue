@@ -80,12 +80,12 @@ const submitDialog = async () => {
     title: data.title,
     description: data.description,
     categoryId: data.category,
-    tags: data.tags,
+    tags: JSON.stringify(data.tags),
     expectedStoryCount: data.expectedStoryCount
   }
 
   const formData = new FormData()
-  formData.append('file', thumbnail.value)
+  formData.append('thumbnail', thumbnail.value[0])
   formData.append('type', 'tale')
 
   for ( let key in reqData) {
